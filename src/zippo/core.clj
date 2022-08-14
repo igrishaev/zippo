@@ -14,14 +14,6 @@
     (-> loc zip/node node-pred)))
 
 
-(defmacro as-loc-pred
-  {:style/indent 1}
-  [[node] & body]
-  `(fn [loc#]
-     (let [~node (zip/node loc#)]
-       ~@body)))
-
-
 (defn find-all [loc loc-pred]
   (some (fn [-loc]
           (when (loc-pred -loc)
@@ -46,6 +38,10 @@
   (apply update-where loc loc-pred zip/edit fn-node args))
 
 
+(defn- -locs-children [locs]
+  (mapcat loc-children locs))
+
+
 (defn loc-children [loc]
   (when-let [loc-child (zip/down loc)]
     (->> loc-child
@@ -55,40 +51,17 @@
 
 (defn loc-layers [loc]
   (->> [loc]
-       (iterate (fn [locs]
-                  (mapcat
-                   loc-children locs)))
+       (iterate -locs-children)
        (take-while seq)))
 
-(defn foo-seq [locs]
+
+(defn- -locs-seq-breadth [locs]
   (when (seq locs)
-    (lazy-seq (concat locs (foo-seq (mapcat loc-children locs)))))
-
-  #_
-  (lazy-cat locs (foo-seq (mapcat loc-children locs)))
-  #_
-  (lazy-seq (concat locs (foo-seq (mapcat loc-children locs)))))
+    (lazy-seq (concat locs (foo-seq (-locs-children locs))))))
 
 
-(defn aaa [n]
-  (lazy-seq (cons n (aaa (inc n)))))
-
-
-(defn foo-bar [loc]
-  (foo-seq [loc]))
-
-#_
-(defn loc-layers [loc]
-
-  (loop [result [loc]
-         locs [loc]]
-
-    (let [locs-next
-          (mapcat loc-children locs)]
-
-      (if (seq locs-next)
-        (recur (into result locs-next) locs-next)
-        result))))
+(defn loc-seq-breadth [loc]
+  (-locs-seq-breadth [loc]))
 
 #_
 (comment
@@ -96,12 +69,26 @@
   (def z
     (zip/vector-zip [1 [2] [2] [[3]]]))
 
+  (zip/root (edit-where z (->loc-pred int?) + 3))
+
+  (zip/root (edit-where z (->loc-pred #(= 2 %)) zip/replace :foo))
+
+  (zip/root (update-where z (->loc-pred #(= 2 %)) zip/replace :foo))
+
+  (zip/root (update-where z (->loc-pred #(= 2 %)) zip/edit str "_aaa"))
+
+  (zip/root (update-where z (->loc-pred #(= 2 %)) zip/remove))
+
+  (-> z zip/up zip/up)
+
+
+
   (def -layers
     (-> z loc-layers))
 
-  (def -seq (foo-bar (zip/vector-zip z)))
+  (def -seq (loc-seq-breadth z))
 
-  (mapv zip/node -layers)
+  (mapv zip/node -seq)
 
   [[1 [2] [2] [[3]]]
 
