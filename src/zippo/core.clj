@@ -14,18 +14,20 @@
     (-> loc zip/node node-pred)))
 
 
-(defn find-all [loc loc-pred]
-  (some (fn [-loc]
-          (when (loc-pred -loc)
-            -loc))
-        (loc-seq loc)))
+(defn loc-find [loc loc-pred]
+  (->> loc
+       (loc-seq)
+       (filter loc-pred)
+       (first)))
 
 
-(defn find-first [loc loc-pred]
-  (filter loc-pred (loc-seq loc)))
+(defn loc-find-all [loc loc-pred]
+  (->> loc
+       (loc-seq)
+       (filter loc-pred)))
 
 
-(defn update-where [loc loc-pred loc-fn & args]
+(defn loc-update [loc loc-pred loc-fn & args]
   (loop [loc loc]
     (if (zip/end? loc)
       loc
@@ -34,8 +36,15 @@
         (recur (zip/next loc))))))
 
 
-(defn edit-where [loc loc-pred fn-node & args]
-  (apply update-where loc loc-pred zip/edit fn-node args))
+(defn loc-update-all [loc loc-fn & args]
+  (loop [loc loc]
+    (if (zip/end? loc)
+      loc
+      (recur (zip/next (apply loc-fn loc args))))))
+
+
+(defn loc-edit [loc loc-pred fn-node & args]
+  (apply loc-update loc loc-pred zip/edit fn-node args))
 
 
 (defn- -locs-children [locs]
@@ -63,21 +72,40 @@
 (defn loc-seq-breadth [loc]
   (-locs-seq-breadth [loc]))
 
+
+(defn- -lookup-until [direction loc loc-pred]
+  (->> loc
+       (iterate direction)
+       (take-while some?)
+       (rest)
+       (filter loc-pred)
+       (first)))
+
+
+(defn lookup-up [loc loc-pred]
+  (-lookup-until zip/up loc loc-pred))
+
+
+(defn lookup-left [loc loc-pred]
+  (-lookup-until zip/left loc loc-pred))
+
+
+(defn lookup-right [loc loc-pred]
+  (-lookup-until zip/left loc loc-pred))
+
 #_
 (comment
 
   (def z
     (zip/vector-zip [1 [2] [2] [[3]]]))
 
-  (zip/root (edit-where z (->loc-pred int?) + 3))
+  (zip/root (loc-edit z (->loc-pred int?) + 3))
 
-  (zip/root (edit-where z (->loc-pred #(= 2 %)) zip/replace :foo))
+  (zip/root (loc-update z (->loc-pred #(= 2 %)) zip/replace :foo))
 
-  (zip/root (update-where z (->loc-pred #(= 2 %)) zip/replace :foo))
+  (zip/root (loc-update z (->loc-pred #(= 2 %)) zip/edit str "_aaa"))
 
-  (zip/root (update-where z (->loc-pred #(= 2 %)) zip/edit str "_aaa"))
-
-  (zip/root (update-where z (->loc-pred #(= 2 %)) zip/remove))
+  (zip/root (loc-update z (->loc-pred #(= 2 %)) zip/remove))
 
   (-> z zip/up zip/up)
 
