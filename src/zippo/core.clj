@@ -14,6 +14,14 @@
     (-> loc zip/node node-pred)))
 
 
+(defmacro as-node-pred
+  {:style/indent 1}
+  [[node] & body]
+  `(fn [loc#]
+     (let [~node (zip/node loc#)]
+       ~@body)))
+
+
 (defn loc-find [loc loc-pred]
   (->> loc
        (loc-seq)
@@ -43,12 +51,8 @@
       (recur (zip/next (apply loc-fn loc args))))))
 
 
-(defn loc-edit [loc loc-pred fn-node & args]
+(defn node-edit [loc loc-pred fn-node & args]
   (apply loc-update loc loc-pred zip/edit fn-node args))
-
-
-(defn- -locs-children [locs]
-  (mapcat loc-children locs))
 
 
 (defn loc-children [loc]
@@ -56,6 +60,10 @@
     (->> loc-child
          (iterate zip/right)
          (take-while some?))))
+
+
+(defn- -locs-children [locs]
+  (mapcat loc-children locs))
 
 
 (defn loc-layers [loc]
@@ -66,7 +74,9 @@
 
 (defn- -locs-seq-breadth [locs]
   (when (seq locs)
-    (lazy-seq (concat locs (foo-seq (-locs-children locs))))))
+    (lazy-seq
+     (concat locs
+             (-locs-seq-breadth (-locs-children locs))))))
 
 
 (defn loc-seq-breadth [loc]
@@ -99,7 +109,13 @@
   (def z
     (zip/vector-zip [1 [2] [2] [[3]]]))
 
-  (zip/root (loc-edit z (->loc-pred int?) + 3))
+  (zip/root (node-edit z (->loc-pred int?) + 3))
+
+  (zip/root (node-edit z
+                       (as-node-)
+
+
+                       (->loc-pred int?) + 3))
 
   (zip/root (loc-update z (->loc-pred #(= 2 %)) zip/replace :foo))
 
