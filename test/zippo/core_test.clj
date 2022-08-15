@@ -1,7 +1,27 @@
 (ns zippo.core-test
-  (:require [clojure.test :refer :all]
-            [zippo.core :refer :all]))
+  (:require
+   [clojure.test :refer [deftest is]]
+   [clojure.zip :as zip]
+   [zippo.core :as zippo]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+
+(def z
+  (zip/vector-zip [1 [2 3] [[4]]]))
+
+
+(deftest test-loc-seq
+
+  (let [locs (zippo/loc-seq z)]
+
+    (is (= 8 (count locs)))
+
+    (is (= [[1 [2 3] [[4]]]
+            1
+            [2 3]
+            2
+            3
+            [[4]]
+            [4]
+            4]
+
+           (mapv zip/node locs)))))

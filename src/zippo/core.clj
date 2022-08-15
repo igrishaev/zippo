@@ -103,6 +103,7 @@
 (defn lookup-right [loc loc-pred]
   (-lookup-until zip/left loc loc-pred))
 
+
 #_
 (comment
 
@@ -121,28 +122,4 @@
 
   (zip/root (loc-update z (->loc-pred #(= 2 %)) zip/edit str "_aaa"))
 
-  (zip/root (loc-update z (->loc-pred #(= 2 %)) zip/remove))
-
-  (-> z zip/up zip/up)
-
-
-
-  (def -layers
-    (-> z loc-layers))
-
-  (def -seq (loc-seq-breadth z))
-
-  (mapv zip/node -seq)
-
-  [[1 [2] [2] [[3]]]
-
-   1
-   [2]
-   [2]
-   [[3]]
-   2
-   2
-   [3]
-   3]
-
-  )
+  (zip/root (loc-update z (->loc-pred #(= 2 %)) zip/remove)))
