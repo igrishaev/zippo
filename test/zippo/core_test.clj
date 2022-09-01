@@ -4,9 +4,11 @@
    [clojure.zip :as zip]
    [zippo.core :as zippo]))
 
+(def z-vec
+  [1 [2 3] [[4]]])
 
 (def z
-  (zip/vector-zip [1 [2 3] [[4]]]))
+  (zip/vector-zip z-vec))
 
 
 (deftest test-loc-seq
@@ -15,7 +17,7 @@
 
     (is (= 8 (count locs)))
 
-    (is (= [[1 [2 3] [[4]]]
+    (is (= [z-vec
             1
             [2 3]
             2
@@ -105,3 +107,38 @@
 
     (is (= [1 [[4]]]
            (zip/root loc)))))
+
+
+(deftest test-loc-update-all
+  (let [loc
+        (zippo/loc-update
+         z
+         (zippo/->loc-pred int?)
+         zip/edit
+         inc)]
+
+    (is (= [2 [3 4] [[5]]]
+           (zip/root loc)))))
+
+
+(deftest test-node-update
+  (let [loc
+        (zippo/node-update
+         z
+         int?
+         inc)]
+    (is (= [2 [3 4] [[5]]]
+           (zip/root loc)))))
+
+
+(deftest test-loc-layers
+  (let [layers
+        (zippo/loc-layers z)]
+
+    (is (= '(([1 [2 3] [[4]]])
+             (1 [2 3] [[4]])
+             (2 3 [4])
+             (4))
+           (for [layer layers]
+             (for [loc layer]
+               (zip/node loc)))))))
