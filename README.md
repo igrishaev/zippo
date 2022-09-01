@@ -56,4 +56,17 @@ untill it reaches the end:
  4]
 ~~~
 
+This is quite useful to traverse a zipper without keeping in mind the ending
+condition (`zip/end?`).
+
+### Finding locations
+
+### Updating a zipper
+
+### Slicing a zipper by layers
+
+### Breadth-first seq of locations
+
+### Lookups
+
 &copy; 2022 Ivan Grishaev
