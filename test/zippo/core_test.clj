@@ -4,8 +4,10 @@
    [clojure.zip :as zip]
    [zippo.core :as zippo]))
 
+
 (def z-vec
   [1 [2 3] [[4]]])
+
 
 (def z
   (zip/vector-zip z-vec))
@@ -156,6 +158,7 @@
             [4]
             4]
            (mapv zip/node locs)))))
+
 
 (deftest test-lookup-up
 

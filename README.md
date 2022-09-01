@@ -1,44 +1,59 @@
-# zippo
+# Zippo
 
-FIXME: description
+Small additions to the standard `clojure.zip` package.
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Lein:
 
-## Usage
+```clojure
+[com.github.igrishaev/zippo "0.1.0"]
+```
 
-FIXME: explanation
+Deps.edn
 
-    $ java -jar zippo-0.1.0-standalone.jar [args]
+```clojure
+{com.github.igrishaev/zippo {:mvn/version "0.1.0"}}
+```
 
-## Options
+## Usage & examples
 
-FIXME: listing of options this app accepts.
+First, import both Zippo and `clojure.zip`:
 
-## Examples
+~~~clojure
+(ns zippo.core-test
+  (:require
+   [clojure.zip :as zip]
+   [zippo.core :as zippo]))
+~~~
 
-...
+Declare a zipper:
 
-### Bugs
+~~~clojure
+(def z
+  (zip/vector-zip [1 [2 3] [[4]]]))
+~~~
 
-...
+Now check out the following Zippo functions.
 
-### Any Other Sections
-### That You Think
-### Might be Useful
+### A finite seq of locations
 
-## License
+The `loc-seq` funtion takes a location and returns a lazy seq of locations
+untill it reaches the end:
 
-Copyright © 2022 FIXME
+~~~clojure
+(let [locs (zippo/loc-seq z)]
+  (mapv zip/node locs))
 
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
+;; get a vector of notes to reduce the output
+[[1 [2 3] [[4]]]
+ 1
+ [2 3]
+ 2
+ 3
+ [[4]]
+ [4]
+ 4]
+~~~
 
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+&copy; 2022 Ivan Grishaev
