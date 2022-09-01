@@ -142,3 +142,47 @@
            (for [layer layers]
              (for [loc layer]
                (zip/node loc)))))))
+
+
+(deftest test-loc-seq-breadth
+  (let [locs
+        (zippo/loc-seq-breadth z)]
+    (is (= [[1 [2 3] [[4]]]
+            1
+            [2 3]
+            [[4]]
+            2
+            3
+            [4]
+            4]
+           (mapv zip/node locs)))))
+
+(deftest test-lookup-up
+
+  (let [loc
+        (zip/vector-zip [:a [:b [:c [:d]]] :e])
+
+        loc-d
+        (zippo/loc-find loc
+                        (zippo/->loc-pred
+                         (fn [node]
+                           (= node :d))))
+
+        loc-b
+        (zippo/lookup-up loc-d
+                         (zippo/->loc-pred
+                          (fn [node]
+                            (and (vector? node)
+                                 (= :b (first node))))))
+
+        loc-not-found
+        (zippo/lookup-up loc-d
+                         (zippo/->loc-pred
+                          (fn [node]
+                            (= node 42))))]
+
+    (is (= :d (zip/node loc-d)))
+
+    (is (= [:b [:c [:d]]] (zip/node loc-b)))
+
+    (is (nil? loc-not-found))))
