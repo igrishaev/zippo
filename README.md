@@ -61,6 +61,19 @@ condition (`zip/end?`).
 
 ### Finding locations
 
+The `loc-find` function looks for the first location that matches a predicate:
+
+~~~clojure
+(let [loc (zippo/loc-find
+           z
+           (fn [loc]
+             (-> loc zip/node (= 3))))]
+
+  (is (= 3 (zip/node loc))))
+~~~
+
+Above, we found a location which node equals 3.
+
 ### Updating a zipper
 
 ### Slicing a zipper by layers
