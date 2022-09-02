@@ -249,7 +249,7 @@ In the example above, first we find the `:d` location. From there, we go up
 until we meet `[:b [:c [:d]]]`. If there is no such a location, the result will
 be nil.
 
-# Also See
+### Also See
 
 [zippers-guide]: https://grishaev.me/en/clojure-zippers/
 
