@@ -142,6 +142,16 @@
   (-lookup-until zip/left loc loc-pred))
 
 
+(defn coll-zip
+  "A zipper to navigate through any (nested) collection."
+  [root]
+  (zip/zipper coll?
+              seq
+              (fn [node children]
+                (with-meta children (meta node)))
+              root))
+
+
 #_
 (comment
 
