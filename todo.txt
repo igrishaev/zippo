@@ -1,2 +1,4 @@
-[ ] cljs support
-[ ] cljs tests
+- cljs support
+- cljs tests
+- coll-zip tests
+- coll-zip readme
