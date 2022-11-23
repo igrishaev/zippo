@@ -146,26 +146,33 @@
   [node children]
   (cond
 
-    (vector? node)
-    (-> (vec children)
-        (with-meta (meta node)))
-
-    (map? node)
-    (-> (reduce
-         (fn [acc! [k v]]
-           (assoc! acc! k v))
-         (transient {})
-         children)
-        (persistent!)
-        (with-meta (meta node)))
-
+    ;; MapEntry doesn't support meta
     (map-entry? node)
     (let [[k v] children]
       (new clojure.lang.MapEntry k v))
 
     :else
-    (-> children
-        (with-meta (meta node)))))
+    (with-meta
+      (cond
+
+        (vector? node)
+        (vec children)
+
+        (set? node)
+        (set children)
+
+        (map? node)
+        (persistent!
+         (reduce ;; into {} doesn't work
+          (fn [acc! [k v]]
+            (assoc! acc! k v))
+          (transient {})
+          children))
+
+        :else
+        children)
+
+      (meta node))))
 
 
 (defn coll-zip

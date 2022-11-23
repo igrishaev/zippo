@@ -189,3 +189,27 @@
     (is (= [:b [:c [:d]]] (zip/node loc-b)))
 
     (is (nil? loc-not-found))))
+
+
+(def sample
+  [{:foo 1}
+   #{'foo 'bar 'hello}
+   (list 1 2 3 {:aa [1 2 {:haha true}]})])
+
+
+(deftest test-coll-zip-edit-map
+  (let [loc
+        (-> sample
+            zippo/coll-zip
+            (zippo/loc-find
+             (fn [loc]
+               (-> loc zip/node (= {:haha true})))))
+
+        loc*
+        (zip/edit loc assoc :extra 42)]
+
+    (is (= (zip/root loc*)
+           '[{:foo 1}
+             #{bar hello foo}
+             (1 2 3 {:aa [1 2 {:haha true
+                               :extra 42}]})]))))
