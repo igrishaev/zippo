@@ -1,4 +1,4 @@
-(defproject com.github.igrishaev/zippo "0.1.1-SNAPSHOT"
+(defproject com.github.igrishaev/zippo "0.1.1"
 
   :description
   "Additions to the standard clojure.zip package."
