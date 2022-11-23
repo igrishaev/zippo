@@ -142,13 +142,38 @@
   (-lookup-until zip/left loc loc-pred))
 
 
+(defn coll-make-node
+  [node children]
+  (cond
+
+    (vector? node)
+    (-> (vec children)
+        (with-meta (meta node)))
+
+    (map? node)
+    (-> (reduce
+         (fn [acc! [k v]]
+           (assoc! acc! k v))
+         (transient {})
+         children)
+        (persistent!)
+        (with-meta (meta node)))
+
+    (map-entry? node)
+    (let [[k v] children]
+      (new clojure.lang.MapEntry k v))
+
+    :else
+    (-> children
+        (with-meta (meta node)))))
+
+
 (defn coll-zip
   "A zipper to navigate through any (nested) collection."
   [root]
   (zip/zipper coll?
               seq
-              (fn [node children]
-                (with-meta children (meta node)))
+              coll-make-node
               root))
 
 
