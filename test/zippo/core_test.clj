@@ -197,7 +197,7 @@
    (list 1 2 3 {:aa [1 2 {:haha true}]})])
 
 
-(deftest test-coll-zip-edit-map
+(deftest test-coll-zip
   (let [loc
         (-> sample
             zippo/coll-zip
@@ -213,3 +213,30 @@
              #{bar hello foo}
              (1 2 3 {:aa [1 2 {:haha true
                                :extra 42}]})]))))
+
+
+(deftest test-coll-build-node
+
+  (is (= (zippo/coll-make-node [42] '(1 2 3 4))
+         [1 2 3 4]))
+
+  (is (= (zippo/coll-make-node #{42} '(1 2 3 4 3))
+         #{1 2 3 4}))
+
+  (is (= (zippo/coll-make-node
+          {:some 'map}
+          '((:key1 "a") ["key2" 2]))
+         {:key1 "a" "key2" 2}))
+
+  (let [entry
+        (zippo/coll-make-node
+         (-> {:some 'map} first)
+         '(:new-key "new-val"))]
+
+    (is (map-entry? entry))
+    (is (= entry [:new-key "new-val"])))
+
+  (is (= (zippo/coll-make-node
+          (repeat 0 2)
+          (repeat 3 2))
+         '(2 2 2))))

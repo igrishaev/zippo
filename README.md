@@ -249,6 +249,54 @@ In the example above, first we find the `:d` location. From there, we go up
 until we meet `[:b [:c [:d]]]`. If there is no such a location, the result will
 be nil.
 
+### A universal collection zipper
+
+The `coll-zip` function builds a zipper that navigates through all the known
+collections types, e.g. vectors, maps, map entries, lazy collections and so
+on. Unlike the standard `zip/vector-zip` and `zip/seq-zip`, it works with any
+combination of vectors and map which is quite useful in production. A brief
+example:
+
+```clojure
+(def sample
+  [{:foo 1}
+   #{'foo 'bar 'hello}
+   (list 1 2 3 {:aa [1 2 {:haha true}]})])
+
+(->> sample
+     coll-zip
+     loc-seq
+     (map zip/node))
+
+(<initial data>
+ {:foo 1}
+ [:foo 1]
+ :foo
+ 1
+ #{bar hello foo}
+ bar
+ hello
+ foo
+ (1 2 3 {:aa [1 2 {:haha true}]})
+ 1
+ 2
+ 3
+ {:aa [1 2 {:haha true}]}
+ [:aa [1 2 {:haha true}]]
+ :aa
+ [1 2 {:haha true}]
+ 1
+ 2
+ {:haha true}
+ [:haha true]
+ :haha
+ true)
+```
+
+The `coll-zip` zipper carries a detailed implementation of the `make-node`
+function. It takes into account the type of the node and properly builds a new
+one from the children. It also preserves the metadata.
+
 ### Also See
 
 [zippers-guide]: https://grishaev.me/en/clojure-zippers/
