@@ -149,7 +149,8 @@
     ;; MapEntry doesn't support meta
     (map-entry? node)
     (let [[k v] children]
-      (new clojure.lang.MapEntry k v))
+      #?(:clj (new clojure.lang.MapEntry k v)
+         :cljs [k v]))
 
     :else
     (with-meta

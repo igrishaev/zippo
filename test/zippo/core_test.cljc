@@ -233,7 +233,8 @@
          (-> {:some 'map} first)
          '(:new-key "new-val"))]
 
-    (is (map-entry? entry))
+    (is #?(:clj (map-entry? entry)
+           :cljs (vector? entry)))
     (is (= entry [:new-key "new-val"])))
 
   (is (= (zippo/coll-make-node
