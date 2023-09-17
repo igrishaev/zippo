@@ -49,11 +49,4 @@
     [[lein-cljsbuild "1.1.8"]]
 
     :dependencies
-    [[org.clojure/clojurescript "1.10.891"]
-
-     #_
-     [javax.xml.bind/jaxb-api "2.3.1"]
-     #_
-     [org.glassfish.jaxb/jaxb-runtime "2.3.1"]]}
-
-   })
+    [[org.clojure/clojurescript "1.10.891"]]}})
