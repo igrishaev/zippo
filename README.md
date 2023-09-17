@@ -32,13 +32,13 @@ traversing and so on. This library brings some bits of missing functionality.
 Lein:
 
 ```clojure
-[com.github.igrishaev/zippo "0.1.2"]
+[com.github.igrishaev/zippo "0.1.3"]
 ```
 
 Deps.edn
 
 ```clojure
-{com.github.igrishaev/zippo {:mvn/version "0.1.2"}}
+{com.github.igrishaev/zippo {:mvn/version "0.1.3"}}
 ```
 
 ## Usage & examples
