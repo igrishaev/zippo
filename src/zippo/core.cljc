@@ -142,6 +142,11 @@
   (-lookup-until zip/left loc loc-pred))
 
 
+(defn ->map-entry [k v]
+  #?(:clj (new clojure.lang.MapEntry k v)
+     :cljs (new cljs.core.MapEntry k v nil)))
+
+
 (defn coll-make-node
   [node children]
   (cond
@@ -149,7 +154,7 @@
     ;; MapEntry doesn't support meta
     (map-entry? node)
     (let [[k v] children]
-      (new clojure.lang.MapEntry k v))
+      (->map-entry k v))
 
     :else
     (with-meta
@@ -182,24 +187,3 @@
               seq
               coll-make-node
               root))
-
-
-#_
-(comment
-
-  (def z
-    (zip/vector-zip [1 [2] [2] [[3]]]))
-
-  (zip/root (node-edit z (->loc-pred int?) + 3))
-
-  (zip/root (node-edit z
-                       (as-node-)
-
-
-                       (->loc-pred int?) + 3))
-
-  (zip/root (loc-update z (->loc-pred #(= 2 %)) zip/replace :foo))
-
-  (zip/root (loc-update z (->loc-pred #(= 2 %)) zip/edit str "_aaa"))
-
-  (zip/root (loc-update z (->loc-pred #(= 2 %)) zip/remove)))

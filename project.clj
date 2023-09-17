@@ -34,4 +34,26 @@
 
     :global-vars
     {*warn-on-reflection* true
-     *assert* true}}})
+     *assert* true}}
+
+   :cljs
+   {:cljsbuild
+    {:builds
+     [{:source-paths ["src" "test"]
+       :compiler {:output-to "target/tests.js"
+                  :output-dir "target"
+                  :main zippo.core-test
+                  :target :nodejs}}]}
+
+    :plugins
+    [[lein-cljsbuild "1.1.8"]]
+
+    :dependencies
+    [[org.clojure/clojurescript "1.10.891"]
+
+     #_
+     [javax.xml.bind/jaxb-api "2.3.1"]
+     #_
+     [org.glassfish.jaxb/jaxb-runtime "2.3.1"]]}
+
+   })
