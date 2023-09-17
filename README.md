@@ -2,6 +2,25 @@
 
 Small additions to the standard `clojure.zip` package.
 
+**ToC**
+
+<!-- toc -->
+
+- [Why](#why)
+- [Installation](#installation)
+- [Usage & examples](#usage--examples)
+  * [A finite seq of locations](#a-finite-seq-of-locations)
+  * [Finding locations](#finding-locations)
+  * [Updating a zipper](#updating-a-zipper)
+  * [Slicing a zipper by layers](#slicing-a-zipper-by-layers)
+  * [Breadth-first seq of locations](#breadth-first-seq-of-locations)
+  * [Lookups](#lookups)
+  * [A universal collection zipper](#a-universal-collection-zipper)
+  * [Also See](#also-see)
+- [ClojureScript support](#clojurescript-support)
+
+<!-- tocstop -->
+
 ## Why
 
 The `clojure.zip` package is a masterpiece yet misses some utility
@@ -303,5 +322,14 @@ one from the children. It also preserves the metadata.
 
 The code from this library was used for [Clojure Zippers manual][zippers-guide]
 -- the complete guide to zippers in Clojure from the very scratch.
+
+## ClojureScript support
+
+Since 1.3, the library supports ClojureScript as well. At least 1.9.542 version
+of ClojureScript compiler is required as the library relies on the
+[MapEntry][MapEntry] type and the [map-entry?][map-entry?] function.
+
+[MapEntry]: https://cljs.github.io/api/cljs.core/MapEntry
+[map-entry?]: https://cljs.github.io/api/cljs.core/map-entryQMARK
 
 &copy; 2022 Ivan Grishaev

@@ -1,6 +1,6 @@
 (ns zippo.core-test
   (:require
-   [clojure.test :refer [deftest is testing]]
+   [clojure.test :refer [deftest is testing run-tests]]
    [clojure.zip :as zip]
    [zippo.core :as zippo]))
 
@@ -240,3 +240,13 @@
           (repeat 0 2)
           (repeat 3 2))
          '(2 2 2))))
+
+
+#?(:cljs
+   (do
+
+     (defn -main [& _]
+       (enable-console-print!)
+       (run-tests))
+
+     (set! *main-cli-fn* -main)))
