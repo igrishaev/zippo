@@ -133,13 +133,13 @@
 (defn lookup-right
   "Go right until a location matches a predicate."
   [loc loc-pred]
-  (-lookup-until zip/left loc loc-pred))
+  (-lookup-until zip/right loc loc-pred))
 
 
 (defn lookup-down
   "Go down until a location matches a predicate."
   [loc loc-pred]
-  (-lookup-until zip/left loc loc-pred))
+  (-lookup-until zip/down loc loc-pred))
 
 
 (defn ->map-entry [k v]
